@@ -18,7 +18,9 @@ public class FirebaseStorageUtils {
     this.mStorageRef = FirebaseStorage.getInstance().getReference();
   }
 
-  public void insert(String id, String fileName, Uri imageUri, StorageConsumer consumer) {
+  //StorageTask is a derived class of Task so it's fine to suppress it.
+  @SuppressWarnings("unchecked")
+  public Task<Void> insert(String id, String fileName, Uri imageUri, StorageConsumer consumer) {
     StorageReference fileReference =
         mStorageRef.child("food").child(id).child(System.currentTimeMillis() + "." + fileName);
 
@@ -43,10 +45,12 @@ public class FirebaseStorageUtils {
                         consumer.accept(uri.toString(), path, "Uploaded successfully");
                       });
                 });
+                
+    return mUploadTask;
   }
 
-  public void delete(FoodItemModel model) {
-    mStorageRef.child(model.getStoragePath()).delete();
+  public Task<Void> delete(FoodItemModel model) {
+    return mStorageRef.child(model.getStoragePath()).delete();
   }
 
   public interface StorageConsumer {

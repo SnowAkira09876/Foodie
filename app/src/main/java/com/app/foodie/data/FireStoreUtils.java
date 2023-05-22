@@ -8,7 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import dagger.hilt.android.scopes.ActivityScoped;
 import io.reactivex.rxjava3.core.Observable;
-import com.google.firebase.firestore.ListenerRegistration;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -26,13 +25,13 @@ public class FireStoreUtils {
   public void insert(FoodItemModel model, Consumer<String> consumer) {
     db.collection("food")
         .add(model)
-        .continueWith(
+        .continueWithTask(
             task -> {
               DocumentReference documentRef = task.getResult();
               String documentId = documentRef.getId();
               documentRef.update("id", documentId);
 
-              storage.insert(
+              return storage.insert(
                   documentId,
                   model.getFileName(),
                   Uri.parse(model.getImage()),
@@ -42,34 +41,29 @@ public class FireStoreUtils {
 
                     consumer.accept(msg);
                   });
-
-              return task.isComplete();
             });
   }
 
   public Observable<List<FoodItemModel>> getFoods() {
     return Observable.create(
         emitter -> {
-          ListenerRegistration registration =
-              db.collection("food")
-                  .orderBy("date")
-                  .addSnapshotListener(
-                      (queryDocumentSnapshots, exception) -> {
-                        if (exception != null) {
-                          emitter.onError(exception);
-                          return;
-                        }
-                        List<FoodItemModel> foods = new ArrayList<>();
+          db.collection("food")
+              .orderBy("date")
+              .addSnapshotListener(
+                  (queryDocumentSnapshots, exception) -> {
+                    if (exception != null) {
+                      emitter.onError(exception);
+                      return;
+                    }
+                    List<FoodItemModel> foods = new ArrayList<>();
 
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                          FoodItemModel food = document.toObject(FoodItemModel.class);
-                          foods.add(food);
-                        }
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                      FoodItemModel food = document.toObject(FoodItemModel.class);
+                      foods.add(food);
+                    }
 
-                        emitter.onNext(foods);
-                      });
-
-          emitter.setCancellable(() -> registration.remove());
+                    emitter.onNext(foods);
+                  });
         });
   }
 
@@ -77,14 +71,13 @@ public class FireStoreUtils {
     String docPath = "food/" + model.getId();
     db.document(docPath)
         .delete()
-        .continueWith(
+        .continueWithTask(
             task -> {
-              storage.delete(model);
-              return task.isComplete();
+              return storage.delete(model);
             })
-        .addOnSuccessListener(
-            aVoid -> {
-              consumer.accept("Deleted successfully");
+        .addOnCompleteListener(
+            task -> {
+              if (task.isSuccessful()) consumer.accept("Deleted successfully");
             });
   }
 }
