@@ -1,7 +1,5 @@
 .androidide
-.gradle
 app/build
-app/google-services.json
 app-release.apk
 foodie
 foodie.pub
