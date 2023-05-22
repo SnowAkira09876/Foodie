@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Foodie</string>
+    <string name="akira_fab_behavior">com.app.foodie.widgets.behaviors.FabScrollingBehavior</string>
+</resources>

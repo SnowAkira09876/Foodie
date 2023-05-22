@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="model"
+            type="com.app.foodie.pojos.FoodItemModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_margin="15dp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:transitionName="shared_item_food"
+            android:layout_weight="1"
+            android:id="@+id/iv_image"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:paddingBottom="10dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedImage"
+            app:imageUri="@{model.image}"
+        />
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:textAppearance="?attr/textAppearanceHeadlineLarge"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@{model.title}"
+            />
+            <TextView
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@{model.price}"
+            />
+
+            <TextView
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@{model.rating}"
+            />
+
+            <TextView
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@{model.phrase}"
+            />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

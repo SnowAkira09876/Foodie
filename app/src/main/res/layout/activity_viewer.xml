@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="model"
+            type="com.app.foodie.pojos.FoodItemModel" />
+    </data>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+    >
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+        >
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                app:titleCollapseMode="scale"
+                android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
+                android:layout_width="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                style="?attr/collapsingToolbarLayoutLargeStyle"
+                app:title="@{model.title}">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    app:layout_collapseMode="pin"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_width="match_parent"
+                    android:id="@+id/toolbar"
+                />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:transitionName="shared_item_food"
+                    android:id="@+id/iv_image"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:adjustViewBounds="true"
+                    android:paddingBottom="10dp"
+                    app:shapeAppearanceOverlay="@style/RoundedImage"
+                    app:imageUri="@{model.image}"
+                />
+
+                <TextView
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/tv_info"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    app:htmlText="@{model.info}"
+                />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_buy"
+            app:layout_behavior="@string/akira_fab_behavior"
+            android:id="@+id/fab" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
