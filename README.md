@@ -1,1 +1,1 @@
-Practicing Rx Java
+Firestore, FirebaseStorage, Hilt and RxJava
