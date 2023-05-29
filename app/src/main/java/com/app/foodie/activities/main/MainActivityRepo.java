@@ -3,6 +3,7 @@ package com.app.foodie.activities.main;
 import com.app.foodie.data.FireStoreUtils;
 import com.app.foodie.pojos.FoodItemModel;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import java.util.List;
 
@@ -17,17 +18,11 @@ public class MainActivityRepo {
     return firestore.getFoods();
   }
 
-  public Observable<String> insert(FoodItemModel model) {
-    return Observable.create(
-        emitter -> {
-          firestore.insert(model, emitter::onNext);
-        });
+  public Single<String> insert(FoodItemModel model) {
+    return firestore.insert(model);
   }
 
-  public Observable<String> delete(FoodItemModel model) {
-    return Observable.create(
-        emitter -> {
-          firestore.delete(model, emitter::onNext);
-        });
+  public Single<String> delete(FoodItemModel model) {
+    return firestore.delete(model);
   }
 }

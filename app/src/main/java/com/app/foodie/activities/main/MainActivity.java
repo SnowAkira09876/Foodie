@@ -21,8 +21,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import javax.inject.Inject;
 
 @AndroidEntryPoint
@@ -83,7 +85,14 @@ public class MainActivity extends AppCompatActivity
     builder.setPositiveButton(
         "Delete",
         (DialogInterface dialog, int id) -> {
-          Disposable deleteDisp = viewModel.delete(model);
+          Disposable deleteDisp =
+              viewModel
+                  .delete(model)
+                  .subscribeOn(Schedulers.io())
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(
+                      msg ->
+                          Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_INDEFINITE).show());
           disposables.add(deleteDisp);
         });
     builder.setNegativeButton("Cancel", (DialogInterface dialog, int id) -> {});
@@ -125,37 +134,31 @@ public class MainActivity extends AppCompatActivity
   }
 
   private void onsetObservers() {
-    Disposable progressDisp =
-        viewModel
-            .getProgressObservable()
-            .subscribe(
-                msg -> Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_INDEFINITE).show());
     Disposable foodDisp =
         viewModel
-            .getFoodsObservable()
+            .getFoods()
             .subscribe(
                 list -> {
                   adapter.submitList(list);
                   viewModel.setDataIsReady(true);
                 });
-    Disposable deleteDisp =
-        viewModel
-            .getDeleteObservable()
-            .subscribe(msg -> Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show());
 
-    Disposable getFoodsDisp = viewModel.getFoods();
-    
-    disposables.add(progressDisp);
     disposables.add(foodDisp);
-    disposables.add(deleteDisp);
-    disposables.add(getFoodsDisp);
 
     viewModel
         .getFood()
         .observe(
             this,
             model -> {
-              Disposable insertDisp = viewModel.insert(model);
+              Disposable insertDisp =
+                  viewModel
+                      .insert(model)
+                      .subscribeOn(Schedulers.io())
+                      .observeOn(AndroidSchedulers.mainThread())
+                      .subscribe(
+                          progress ->
+                              Snackbar.make(binding.getRoot(), progress, Snackbar.LENGTH_INDEFINITE)
+                                  .show());
 
               disposables.add(insertDisp);
             });
